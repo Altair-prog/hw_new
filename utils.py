@@ -1,38 +1,27 @@
 import json
+from candidate import Candidate
 
 
-def load_json() -> list[dict]:
-    with open('candidates.json', 'r', encoding='utf-8') as file:
-        candidates = json.load(file)
-        return candidates
+def load_candidates(filename):
+    with open(filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    return data
 
-def format_candidates(candidates: list[dict]) -> str:
-    '''Форматирование списка кандидатов'''
-    result = '<pre>'
+def get_all(data):
+    arr = []
+    for item in data:
+        candidate = Candidate(item['pk'], item['name'], item['position'], item['skills'].lower(), item['picture'])
+        arr.append(candidate)
+    return arr
 
-    for candidate in candidates:
-        result += f"""
-            {candidate["name"]}\n 
-            {candidate["position"]}\n 
-            {candidate["skills"]}\n 
-            """
-    result += '</pre>'
-    return result
+def get_by_pk(pk, data):
+    for item in data:
+        if item.pk == pk:
+            return item
 
-def get_all_candidates() -> list[dict]:
-    return load_json()
-
-def get_candidate_by_id(uid: int) -> dict | None :
-    candidates = get_all_candidates()
-    for candidate in candidates:
-        if candidate['id'] == uid:
-            return candidate
-    return None
-
-def get_candidate_by_skill(skill: str) -> list[dict]:
-    candidates = get_all_candidates()
-    result = []
-    for candidate in candidates:
-        if skill in candidate['skills'].lower(). split(', '):
-            result.append(candidate)
-    return result
+def get_by_skill(skill_name, data):
+    arr = []
+    for item in data:
+        if skill_name in item.skills:
+            arr.append(item)
+    return arr
