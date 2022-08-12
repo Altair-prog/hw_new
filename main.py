@@ -1,32 +1,49 @@
 from flask import Flask
-from pip._internal.resolution.resolvelib import candidates
 
-from utils import load_json, get_all_candidates, format_candidates, get_candidate_by_id, get_candidate_by_skill
+from utils import load_candidates, get_all, get_by_pk, get_by_skill
+
+FILENAME = 'candidates.json'
+data = get_all(load_candidates(FILENAME))
 
 app = Flask(__name__)
 
 @app.route('/')
-def page_name():
-    '''Главная страница'''
-    candidate: list[dict] = get_all_candidates()
-    result: str = format_candidates(candidates)
-    return result
-
-@app.route('/candidate/<int:uid>')
-def page_candidate(uid):
-    '''Поиск кандидиата по id'''
-    candidate: dict = get_candidate_by_id(uid)
-    result = f'<img src="{candidate["picture"]}">'
-    result += format_candidates([candidate])
-    return result
-
-@app.route('/skills/<skill>')
-def page_skills(skill):
-    '''Поиск по навыку'''
-    skill_lower = skill.lower()
-    candidates: list[dict] = get_candidate_by_skill(skill_lower)
-    result = format_candidates(candidates)
-    return result
+def index():
+    str = '<pre>'
+    for i in data:
+        str += f'{i} \n \n'
+    str += '</pre>'
+    return str
 
 
-app.run()
+@app.route('/candidates/<int:pk>')
+def get_user(pk):
+    user = get_by_pk(pk, data)
+    if user:
+        str = f'<img src = "{user.picture}">'
+        str += f'<pre> {user} </pre>'
+    else:
+        str = 'NOT FOUND'
+    return str
+
+@app.route('/skills/<x>')
+def get_users(x):
+    x = x.lower()
+    users = get_by_skill(x, data)
+    if users:
+        str = '<pre>'
+        for i in users:
+            str += f'{i} \n \n'
+        str += '</pre>'
+    else:
+        str = 'NOT FOUND'
+    return str
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    app.run(port=5000)
