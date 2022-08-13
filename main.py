@@ -9,35 +9,35 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    str = '<pre>'
+    candidate_str = '<pre>'
     for i in data:
-        str += f'{i} \n \n'
-    str += '</pre>'
-    return str
+        candidate_str += f'{i} \n \n'
+    candidate_str += '</pre>'
+    return candidate_str
 
 
 @app.route('/candidates/<int:pk>')
 def get_user(pk):
     user = get_by_pk(pk, data)
     if user:
-        str = f'<img src = "{user.picture}">'
-        str += f'<pre> {user} </pre>'
+        candidate_str = f'<img src = "{user.picture}">'
+        candidate_str += f'<pre> {user} </pre>'
     else:
-        str = 'NOT FOUND'
-    return str
+        candidate_str = 'NOT FOUND'
+    return candidate_str
 
 @app.route('/skills/<x>')
 def get_users(x):
     x = x.lower()
     users = get_by_skill(x, data)
     if users:
-        str = '<pre>'
+        candidate_str = '<pre>'
         for i in users:
-            str += f'{i} \n \n'
-        str += '</pre>'
+            candidate_str += f'{i} \n \n'
+        candidate_str += '</pre>'
     else:
-        str = 'NOT FOUND'
-    return str
+        candidate_str = 'NOT FOUND'
+    return candidate_str
 
 
 
